@@ -1,8 +1,7 @@
-import { Olympic } from './../models/Olympic';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +14,10 @@ export class OlympicService {
 
   loadInitialData() {
     return this.http.get<any>(this.olympicUrl).pipe(
-      tap((value) => this.olympics$.next(value)),
-      //map((value, i) => ({ name: value[i].country, value: value[i].id })),
+      tap((value) => {
+        this.olympics$.next(value);
+        //console.log(value);
+      }),
       catchError((error, caught) => {
         // TODO: improve error handling
         console.error(error);
@@ -29,9 +30,5 @@ export class OlympicService {
 
   getOlympics() {
     return this.olympics$.asObservable();
-  }
-
-  getParticipations(id: number) {
-    return this.getOlympics();
   }
 }
